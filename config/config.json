@@ -1,6 +1,7 @@
 {
     "deleteSpecialSlotContents": false,
     "deleteSecureContainerContents": true,
+    "removeSecureContainerFilter": true,
     "exemptItems": [
         "62e9103049c018f425059f38"
     ]

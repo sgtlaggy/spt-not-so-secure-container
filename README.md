@@ -11,3 +11,7 @@ Exempt items will *only* affect this mod's feature, it does not affect normal de
 By default, only the DSP transmitter is exempt from this mod's deletion.
 
 The list requires the item ID, you can find these [here](https://db.sp-tarkov.com/search) by searching for an item by name. An item's parent ID is also valid, for example including `"550aa4cd4bdc2dd8348b456c"` will allow you to keep any suppresssors in your secure container when you die.
+
+## Remove Secure Container Filter
+
+This feature allows you to put any item that will fit into your secure container. With the other features of the mod, the secure container just becomes extra in-raid space, so this helps avoid some loot juggling.

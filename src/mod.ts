@@ -1,6 +1,7 @@
 import { DependencyContainer } from "tsyringe";
 
 import { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
+import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
 import { DatabaseServer } from "@spt-aki/servers/DatabaseServer";
 import { InRaidHelper } from "@spt-aki/helpers/InRaidHelper";
@@ -9,7 +10,7 @@ import { InventoryHelper } from "@spt-aki/helpers/InventoryHelper";
 import { CONFIG } from "./config";
 
 
-class Mod implements IPreAkiLoadMod {
+class Mod implements IPreAkiLoadMod, IPostDBLoadMod {
     public preAkiLoad(container: DependencyContainer): void {
         const logger = container.resolve<ILogger>("WinstonLogger");
 
@@ -55,7 +56,26 @@ class Mod implements IPreAkiLoadMod {
                 };
             }, { frequency: "Always" });
         }
+    }
 
+    postDBLoad(container: DependencyContainer): void {
+        if (!CONFIG.removeSecureContainerFilter) {
+            return;
+        }
+
+        const logger = container.resolve<ILogger>("WinstonLogger");
+        const db = container.resolve<DatabaseServer>("DatabaseServer").getTables();
+        const items = db.templates.items;
+
+        logger.info("[NotSoSecureContainer] Allowing all items in secure containers.")
+
+        for (const item of Object.values(items)) {
+            const props = item._props;
+            if (item._parent === "5448bf274bdc2dfc2f8b456a"
+                && props.Grids[0]._props.filters !== undefined) {
+                props.Grids[0]._props.filters = [];
+            }
+        }
     }
 }
 
