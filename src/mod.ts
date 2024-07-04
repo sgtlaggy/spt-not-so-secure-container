@@ -71,9 +71,8 @@ class Mod implements IPreAkiLoadMod, IPostDBLoadMod {
 
         for (const item of Object.values(items)) {
             const props = item._props;
-            if (item._parent === "5448bf274bdc2dfc2f8b456a"
-                && props.Grids[0]._props.filters !== undefined) {
-                props.Grids[0]._props.filters = [];
+            if (item._parent === "5448bf274bdc2dfc2f8b456a") {
+                props.Grids?.forEach((grid) => { grid._props.filters = [] });
             }
         }
     }
