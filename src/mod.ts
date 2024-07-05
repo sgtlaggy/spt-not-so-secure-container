@@ -1,11 +1,11 @@
 import { DependencyContainer } from "tsyringe";
 
-import { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
-import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
-import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
-import { DatabaseServer } from "@spt-aki/servers/DatabaseServer";
-import { InRaidHelper } from "@spt-aki/helpers/InRaidHelper";
-import { InventoryHelper } from "@spt-aki/helpers/InventoryHelper";
+import { IPreAkiLoadMod } from "@spt/models/external/IPreAkiLoadMod";
+import { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { DatabaseServer } from "@spt/servers/DatabaseServer";
+import { InRaidHelper } from "@spt/helpers/InRaidHelper";
+import { InventoryHelper } from "@spt/helpers/InventoryHelper";
 
 import { CONFIG } from "./config";
 
