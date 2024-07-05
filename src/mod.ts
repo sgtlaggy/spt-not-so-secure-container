@@ -1,17 +1,17 @@
 import { DependencyContainer } from "tsyringe";
 
-import { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
-import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
-import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
-import { DatabaseServer } from "@spt-aki/servers/DatabaseServer";
-import { InRaidHelper } from "@spt-aki/helpers/InRaidHelper";
-import { InventoryHelper } from "@spt-aki/helpers/InventoryHelper";
+import { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
+import { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { DatabaseServer } from "@spt/servers/DatabaseServer";
+import { InRaidHelper } from "@spt/helpers/InRaidHelper";
+import { InventoryHelper } from "@spt/helpers/InventoryHelper";
 
 import { CONFIG } from "./config";
 
 
-class Mod implements IPreAkiLoadMod, IPostDBLoadMod {
-    public preAkiLoad(container: DependencyContainer): void {
+class Mod implements IPreSptLoadMod, IPostDBLoadMod {
+    public preSptLoad(container: DependencyContainer): void {
         const logger = container.resolve<ILogger>("WinstonLogger");
 
         function includesItemOrParents(arr: string[], tpl: string) {
