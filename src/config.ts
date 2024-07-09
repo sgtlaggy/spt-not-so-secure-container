@@ -4,6 +4,8 @@ class IConfig {
     deleteSpecialSlotContents: boolean;
     deleteSecureContainerContents: boolean;
     removeSecureContainerFilter: boolean;
+    deletionChanceAll: number;
+    deletionChanceIndividual: number;
     exemptItems: string[];
 }
 

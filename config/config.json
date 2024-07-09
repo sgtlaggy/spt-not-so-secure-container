@@ -2,6 +2,8 @@
     "deleteSpecialSlotContents": false,
     "deleteSecureContainerContents": true,
     "removeSecureContainerFilter": true,
+    "deletionChanceAll": 100,
+    "deletionChanceIndividual": 0,
     "exemptItems": [
         "62e9103049c018f425059f38"
     ]

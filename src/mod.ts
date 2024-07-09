@@ -8,11 +8,13 @@ import { InRaidHelper } from "@spt/helpers/InRaidHelper";
 import { InventoryHelper } from "@spt/helpers/InventoryHelper";
 
 import { CONFIG } from "./config";
+import { RandomUtil } from "@spt/utils/RandomUtil";
 
 
 class Mod implements IPreSptLoadMod, IPostDBLoadMod {
     public preSptLoad(container: DependencyContainer): void {
         const logger = container.resolve<ILogger>("WinstonLogger");
+        const randomUtil = container.resolve<RandomUtil>("RandomUtil");
 
         function includesItemOrParents(arr: string[], tpl: string) {
             const databaseServer = container.resolve<DatabaseServer>("DatabaseServer");
@@ -31,7 +33,7 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
         if (CONFIG.deleteSecureContainerContents) { deleteFrom.push("secure container"); }
         if (CONFIG.deleteSpecialSlotContents) { deleteFrom.push("special slots"); }
 
-        if (deleteFrom.length > 0) {
+        if (deleteFrom.length && (CONFIG.deletionChanceAll || CONFIG.deletionChanceIndividual)) {
             logger.info(`[NotSoSecureContainer] Patching to delete items from ${deleteFrom.join(" and ")} on death.`);
 
             container.afterResolution("InRaidHelper", (_t, inRaidHelper: InRaidHelper) => {
@@ -43,8 +45,11 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
                     const items = pmcData.Inventory.items;
                     const secureContainer = items.find((i) => (i.slotId === "SecuredContainer"));
 
+                    const deleteAll = randomUtil.getChance100(CONFIG.deletionChanceAll);
+
                     items.filter((i) =>
-                    (!includesItemOrParents(CONFIG.exemptItems, i._tpl)
+                    ((deleteAll || randomUtil.getChance100(CONFIG.deletionChanceIndividual))
+                        && !includesItemOrParents(CONFIG.exemptItems, i._tpl)
                         && ((CONFIG.deleteSecureContainerContents &&
                             secureContainer && (i.parentId === secureContainer._id))
                             // setting LostOnDeath config didn't work, so doing it here
