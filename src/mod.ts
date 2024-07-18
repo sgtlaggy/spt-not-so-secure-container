@@ -48,13 +48,13 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
                     const deleteAll = randomUtil.getChance100(CONFIG.deletionChanceAll);
 
                     items.filter((i) =>
-                    ((deleteAll || randomUtil.getChance100(CONFIG.deletionChanceIndividual))
-                        && !includesItemOrParents(CONFIG.exemptItems, i._tpl)
-                        && ((CONFIG.deleteSecureContainerContents &&
-                            secureContainer && (i.parentId === secureContainer._id))
-                            // setting LostOnDeath config didn't work, so doing it here
-                            || (CONFIG.deleteSpecialSlotContents
-                                && i.slotId?.startsWith("SpecialSlot")))))
+                    (((CONFIG.deleteSecureContainerContents &&
+                        secureContainer && (i.parentId === secureContainer._id))
+                        // setting LostOnDeath config didn't work, so doing it here
+                        || (CONFIG.deleteSpecialSlotContents
+                            && i.slotId?.startsWith("SpecialSlot")))
+                        && (deleteAll || randomUtil.getChance100(CONFIG.deletionChanceIndividual))
+                        && !includesItemOrParents(CONFIG.exemptItems, i._tpl)))
                         .forEach((i) => inventoryHelper.removeItem(pmcData, i._id, sessionId));
 
                     original.call(inRaidHelper, pmcData, sessionId);
