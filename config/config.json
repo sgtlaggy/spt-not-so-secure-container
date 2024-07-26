@@ -5,6 +5,7 @@
     "deletionChanceAll": 100,
     "deletionChanceIndividual": 0,
     "exemptItems": [
+        "65ddcc9cfa85b9f17d0dfb07",
         "62e9103049c018f425059f38"
     ]
 }
