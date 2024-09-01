@@ -5,7 +5,7 @@ import { InventoryHelper } from "@spt/helpers/InventoryHelper";
 import { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
 import { ILogger } from "@spt/models/spt/utils/ILogger";
-import { DatabaseServer } from "@spt/servers/DatabaseServer";
+import { DatabaseService } from "@spt/services/DatabaseService";
 import { RandomUtil } from "@spt/utils/RandomUtil";
 
 import { CONFIG } from "./config";
@@ -17,8 +17,8 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
         const randomUtil = container.resolve<RandomUtil>("RandomUtil");
 
         function includesItemOrParents(arr: string[], tpl: string) {
-            const databaseServer = container.resolve<DatabaseServer>("DatabaseServer");
-            const items = databaseServer.getTables().templates.items;
+            const db = container.resolve<DatabaseService>("DatabaseService");
+            const items = db.getItems();
             let item = items[tpl];
 
             do {
@@ -69,8 +69,8 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
         }
 
         const logger = container.resolve<ILogger>("WinstonLogger");
-        const db = container.resolve<DatabaseServer>("DatabaseServer").getTables();
-        const items = db.templates.items;
+        const db = container.resolve<DatabaseService>("DatabaseService");
+        const items = db.getItems();
 
         logger.info("[NotSoSecureContainer] Allowing all items in secure containers.")
 
