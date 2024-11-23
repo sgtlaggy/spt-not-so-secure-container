@@ -1,7 +1,7 @@
 {
     "name": "NotSoSecureContainer",
     "version": "2.1.2",
-    "sptVersion": "~3.9",
+    "sptVersion": "^3.9",
     "author": "sgtlaggy",
     "contributors": [],
     "license": "MIT",
