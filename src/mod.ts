@@ -2,6 +2,7 @@ import { DependencyContainer } from "tsyringe";
 
 import { InRaidHelper } from "@spt/helpers/InRaidHelper";
 import { InventoryHelper } from "@spt/helpers/InventoryHelper";
+import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
 import { ILogger } from "@spt/models/spt/utils/ILogger";
@@ -76,7 +77,7 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
 
         for (const item of Object.values(items)) {
             const props = item._props;
-            if (item._parent === "5448bf274bdc2dfc2f8b456a") {
+            if (item._parent === BaseClasses.MOB_CONTAINER) {
                 props.Grids?.forEach((grid) => { grid._props.filters = [] });
             }
         }
