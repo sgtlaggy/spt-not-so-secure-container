@@ -42,20 +42,60 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
 
                 inRaidHelper.deleteInventory = (pmcData, sessionId) => {
                     const inventoryHelper = container.resolve<InventoryHelper>("InventoryHelper");
+                    const db = container.resolve<DatabaseService>("DatabaseService");
+                    const dbItems = db.getItems();
 
                     const items = pmcData.Inventory.items;
                     const secureContainer = items.find((i) => (i.slotId === "SecuredContainer"));
 
                     const deleteAll = randomUtil.getChance100(CONFIG.deletionChanceAll);
 
-                    items.filter((i) =>
+                    // get immediate items in configured slots
+                    const itemsAtRisk = items.filter((i) =>
                     (((CONFIG.deleteSecureContainerContents &&
                         secureContainer && (i.parentId === secureContainer._id))
                         // setting LostOnDeath config didn't work, so doing it here
                         || (CONFIG.deleteSpecialSlotContents
-                            && i.slotId?.startsWith("SpecialSlot")))
-                        && (deleteAll || randomUtil.getChance100(CONFIG.deletionChanceIndividual))
-                        && !includesItemOrParents(CONFIG.exemptItems, i._tpl)))
+                            && i.slotId?.startsWith("SpecialSlot")))));
+
+                    // get all items nested within configured slots
+                    // this should loop 1 + N of containers nested in covered slots
+                    let lastDepth = itemsAtRisk;
+                    let updated = false;
+                    do {
+                        updated = false;
+                        const toAdd = items.filter(
+                            (i) => (lastDepth.some(
+                                (p) => (p._id === i.parentId))));
+                        if (toAdd.length > 0) {
+                            updated = true;
+                            itemsAtRisk.push(...toAdd);
+                            lastDepth = toAdd;
+                        }
+                    } while (updated);
+
+                    // split exempt and deletable items
+                    const exempt = [];
+                    const toDelete = [];
+                    itemsAtRisk.forEach((i) => {
+                        if (includesItemOrParents(CONFIG.exemptItems, i._tpl)) {
+                            // exempt all parent containers of exempt items
+                            // for example, don't delete an LBCR containing an exempt injector case
+                            let parent = i;
+                            do {
+                                exempt.push(parent);
+                                parent = itemsAtRisk.find((p) => (p._id === parent.parentId));
+                            } while (parent !== undefined);
+                        } else {
+                            toDelete.push(i);
+                        }
+                    });
+
+                    toDelete.filter((i) =>
+                    (!exempt.includes(i)
+                        && (dbItems[i._tpl]._parent !== BaseClasses.BUILT_IN_INSERTS) // soft armor
+                        && (deleteAll
+                            || randomUtil.getChance100(CONFIG.deletionChanceIndividual))))
                         .forEach((i) => inventoryHelper.removeItem(pmcData, i._id, sessionId));
 
                     original.call(inRaidHelper, pmcData, sessionId);
