@@ -86,14 +86,14 @@ class Mod implements IPreSptLoadMod, IPostDBLoadMod {
                                 exempt.push(parent);
                                 parent = itemsAtRisk.find((p) => (p._id === parent.parentId));
                             } while (parent !== undefined);
-                        } else {
+                        } else if (!((i.slotId === "cartridges") // ammo in boxes/mags
+                            || (dbItems[i._tpl]._parent === BaseClasses.BUILT_IN_INSERTS))) { // soft armor
                             toDelete.push(i);
                         }
                     });
 
                     toDelete.filter((i) =>
                     (!exempt.includes(i)
-                        && (dbItems[i._tpl]._parent !== BaseClasses.BUILT_IN_INSERTS) // soft armor
                         && (deleteAll
                             || randomUtil.getChance100(CONFIG.deletionChanceIndividual))))
                         .forEach((i) => inventoryHelper.removeItem(pmcData, i._id, sessionId));
